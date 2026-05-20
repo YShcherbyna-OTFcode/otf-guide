@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OTF — One Team Forces</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Unbounded:wght@600;700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#0a0a0e;--bg2:#12121a;--bg3:#1a1a24;--bg4:#22222e;
+  --border:#28283a;--border2:#38384e;
+  --text:#e8e8f4;--muted:#6a6a88;--hint:#3a3a58;
+  --ukraine-blue:#005BBB;--ukraine-yellow:#FFD500;
+  --green:#22c55e;--green-bg:rgba(34,197,94,0.08);
+  --amber:#f59e0b;--amber-bg:rgba(245,158,11,0.08);
+  --blue:#60a5fa;--blue-bg:rgba(96,165,250,0.08);
+  --purple:#a78bfa;--purple-bg:rgba(167,139,250,0.08);
+  --red:#f87171;--red-bg:rgba(248,113,113,0.08);
+  --teal:#2dd4bf;--teal-bg:rgba(45,212,191,0.08);
+  --orange:#fb923c;--orange-bg:rgba(251,146,60,0.08);
+  --pink:#f472b6;--pink-bg:rgba(244,114,182,0.08);
+}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'Manrope',sans-serif;min-height:100vh;overflow-x:hidden;line-height:1.6}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 20% 20%,rgba(0,91,187,0.06) 0%,transparent 60%),radial-gradient(ellipse at 80% 80%,rgba(255,213,0,0.04) 0%,transparent 60%);pointer-events:none;z-index:0}
+
+nav{position:fixed;top:0;left:0;right:0;z-index:100;backdrop-filter:blur(20px);background:rgba(10,10,14,0.88);border-bottom:1px solid var(--border)}
+.nav-inner{max-width:1100px;margin:0 auto;padding:0 20px;display:flex;align-items:center;justify-content:space-between;height:58px;gap:12px}
+.nav-logo{font-family:'Unbounded',sans-serif;font-size:15px;font-weight:700;background:linear-gradient(135deg,var(--ukraine-blue),var(--ukraine-yellow));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;cursor:pointer;flex-shrink:0}
+.nav-links{display:flex;gap:2px;flex-wrap:wrap;justify-content:flex-end}
+.nav-link{padding:5px 10px;border-radius:7px;font-size:11px;font-weight:600;color:var(--muted);cursor:pointer;transition:all 0.15s;border:none;background:none;font-family:'Manrope',sans-serif;white-space:nowrap}
+.nav-link:hover,.nav-link.active{color:var(--text);background:var(--bg3)}
+@media(max-width:800px){.nav-links{display:none}}
+.hamburger{display:none;background:var(--bg3);border:1px solid var(--border);color:var(--text);padding:7px 10px;border-radius:8px;cursor:pointer;font-size:15px}
+@media(max-width:800px){.hamburger{display:block}}
+.mob-nav{display:none;position:fixed;top:59px;left:0;right:0;background:var(--bg2);border-bottom:1px solid var(--border);z-index:99;padding:12px 16px;flex-wrap:wrap;gap:8px}
+.mob-nav.open{display:flex}
+.mob-btn{padding:8px 14px;border-radius:8px;font-size:12px;font-weight:600;color:var(--muted);cursor:pointer;background:var(--bg3);border:1px solid var(--border)}
+
+.panel{display:none;padding-top:78px;min-height:100vh;animation:fi 0.25s ease}
+.panel.active{display:block}
+@keyframes fi{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+
+.hero{text-align:center;padding:70px 20px 50px;position:relative;z-index:1}
+.flag{display:inline-flex;border-radius:4px;overflow:hidden;margin-bottom:20px;border:1px solid var(--border)}
+.flag span{display:block;width:36px;height:22px}
+h1{font-family:'Unbounded',sans-serif;font-size:clamp(34px,7vw,68px);font-weight:700;line-height:1.0;margin-bottom:14px;letter-spacing:-2px}
+.line2{background:linear-gradient(135deg,var(--ukraine-blue),var(--ukraine-yellow));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero p{font-size:16px;color:var(--muted);max-width:520px;margin:0 auto 50px;line-height:1.7}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:9px;max-width:880px;margin:0 auto;padding:0 16px}
+.pill{display:flex;align-items:center;gap:10px;padding:14px 15px;background:var(--bg2);border:1px solid var(--border);border-radius:12px;cursor:pointer;transition:all 0.2s;text-align:left}
+.pill:hover{background:var(--bg3);border-color:var(--border2);transform:translateY(-2px)}
+.pill .e{font-size:22px;flex-shrink:0}
+.pill .t{font-size:13px;font-weight:600;line-height:1.3}
+.pill .s{font-size:11px;color:var(--muted);margin-top:1px}
+
+.wrap{max-width:780px;margin:0 auto;padding:0 20px 80px;position:relative;z-index:1}
+.back{display:inline-flex;align-items:center;gap:7px;padding:7px 14px;border-radius:9px;background:var(--bg2);border:1px solid var(--border);color:var(--muted);font-size:12px;font-weight:600;cursor:pointer;margin-bottom:24px;transition:all 0.15s}
+.back:hover{background:var(--bg3);color:var(--text)}
+.ph{padding:36px 0 28px;border-bottom:1px solid var(--border);margin-bottom:32px}
+.ph .em{font-size:44px;margin-bottom:14px;display:block}
+.ph .pt{font-family:'Unbounded',sans-serif;font-size:clamp(22px,4vw,36px);font-weight:700;line-height:1.1;margin-bottom:10px}
+.ph .pd{font-size:14px;color:var(--muted);line-height:1.7}
+
+.block{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:22px;margin-bottom:14px}
+.btitle{font-size:11px;letter-spacing:2px;text-transform:uppercase;font-weight:700;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.btitle::after{content:'';flex:1;height:1px;background:var(--border)}
+.btext{font-size:14px;color:var(--muted);line-height:1.7;margin-bottom:8px}
+.btext:last-child{margin-bottom:0}
+.btext strong{color:var(--text)}
+.rl{list-style:none;display:flex;flex-direction:column;gap:7px}
+.rl li{display:flex;gap:9px;font-size:14px;color:var(--muted);line-height:1.6}
+.rl li::before{content:'→';color:var(--hint);flex-shrink:0}
+.rl li strong{color:var(--text)}
+.sg{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+@media(max-width:480px){.sg{grid-template-columns:1fr}}
+.sc{background:var(--bg3);border-radius:10px;padding:13px 15px;border:1px solid var(--border)}
+.sc .st{font-family:'JetBrains Mono',monospace;font-size:17px;font-weight:600;margin-bottom:4px}
+.sc .sl{font-size:13px;color:var(--muted);line-height:1.5}
+.loc{display:inline-flex;align-items:center;gap:7px;padding:9px 14px;background:var(--bg3);border:1px solid var(--border);border-radius:9px;color:var(--blue);font-size:13px;font-weight:600;text-decoration:none;transition:all 0.15s;margin-top:6px}
+.loc:hover{background:var(--bg4)}
+.warn{display:flex;gap:10px;padding:13px 15px;border-radius:10px;font-size:13px;line-height:1.6;background:rgba(248,113,113,0.08);border:1px solid rgba(248,113,113,0.2);margin-top:8px}
+.info{display:flex;gap:10px;padding:13px 15px;border-radius:10px;font-size:13px;line-height:1.6;background:rgba(96,165,250,0.08);border:1px solid rgba(96,165,250,0.2);margin-top:8px}
+.ok{display:flex;gap:10px;padding:13px 15px;border-radius:10px;font-size:13px;line-height:1.6;background:rgba(34,197,94,0.08);border:1px solid rgba(34,197,94,0.2);margin-top:8px}
+.bx{color:var(--muted)}
+.bx strong{color:var(--text)}
+.partner{display:flex;align-items:center;gap:12px;padding:13px 15px;background:var(--bg3);border-radius:10px;border:1px solid var(--border);margin-bottom:10px}
+.pname{font-size:14px;font-weight:600;margin-bottom:2px}
+.plink{font-size:12px;color:var(--blue);text-decoration:none}
+.paddr{font-size:12px;color:var(--muted);margin-top:2px}
+.div{height:1px;background:var(--border);margin:18px 0}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+@media(max-width:480px){.two{grid-template-columns:1fr}}
+.si{display:flex;align-items:center;gap:8px;padding:9px 12px;background:var(--bg3);border-radius:8px;font-size:13px;font-weight:600}
+.vals{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:9px}
+.vc{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:16px 18px}
+.vi{font-size:22px;margin-bottom:8px}
+.vt{font-size:14px;font-weight:700;margin-bottom:5px}
+.vd{font-size:13px;color:var(--muted);line-height:1.5}
+.slabel{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--hint);font-weight:700;margin-bottom:18px;display:flex;align-items:center;gap:10px}
+.slabel::after{content:'';flex:1;height:1px;background:var(--border)}
+.hsec{max-width:960px;margin:0 auto;padding:0 20px 56px;position:relative;z-index:1}
+.re{font-size:12px;font-weight:600;color:var(--muted)}
+footer{text-align:center;padding:36px 20px;font-size:12px;color:var(--hint);border-top:1px solid var(--border);position:relative;z-index:1}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <div class="nav-logo" onclick="go('home')">OTF</div>
+    <div class="nav-links">
+      <button class="nav-link" onclick="go('home')">🏠 Головна</button>
+      <button class="nav-link" onclick="go('rules')">📋 Правила</button>
+      <button class="nav-link" onclick="go('swim')">🏊 Плавання</button>
+      <button class="nav-link" onclick="go('massage')">💆 Масаж</button>
+      <button class="nav-link" onclick="go('rehab')">♻️ Реабілітація</button>
+      <button class="nav-link" onclick="go('polygon')">🎯 Полігон</button>
+      <button class="nav-link" onclick="go('crossfit')">💪 CrossFit</button>
+      <button class="nav-link" onclick="go('wake')">🏄 Wake</button>
+      <button class="nav-link" onclick="go('surf')">🌊 Surf</button>
+      <button class="nav-link" onclick="go('karting')">🏎️ Karting</button>
+      <button class="nav-link" onclick="go('tango')">💃 Tango</button>
+    </div>
+    <button class="hamburger" onclick="toggleMob()">☰</button>
+  </div>
+</nav>
+
+<div class="mob-nav" id="mob">
+  <div class="mob-btn" onclick="go('home');toggleMob()">🏠 Головна</div>
+  <div class="mob-btn" onclick="go('rules');toggleMob()">📋 Правила</div>
+  <div class="mob-btn" onclick="go('swim');toggleMob()">🏊 Плавання</div>
+  <div class="mob-btn" onclick="go('massage');toggleMob()">💆 Масаж</div>
+  <div class="mob-btn" onclick="go('rehab');toggleMob()">♻️ Реабілітація</div>
+  <div class="mob-btn" onclick="go('polygon');toggleMob()">🎯 Полігон</div>
+  <div class="mob-btn" onclick="go('crossfit');toggleMob()">💪 CrossFit</div>
+  <div class="mob-btn" onclick="go('wake');toggleMob()">🏄 Wake</div>
+  <div class="mob-btn" onclick="go('surf');toggleMob()">🌊 Surf</div>
+  <div class="mob-btn" onclick="go('karting');toggleMob()">🏎️ Karting</div>
+  <div class="mob-btn" onclick="go('tango');toggleMob()">💃 Tango</div>
+</div>
+
+<!-- HOME -->
+<div class="panel active" id="p-home">
+  <div class="hero">
+    <div class="flag"><span style="background:#005BBB"></span><span style="background:#FFD500"></span></div>
+    <h1><span style="display:block">ONE TEAM</span><span class="line2" style="display:block">FORCES</span></h1>
+    <p>Спільнота, що об'єднує ветеранів, волонтерів та небайдужих навколо спорту, відновлення та спільного розвитку</p>
+    <div class="grid">
+      <div class="pill" onclick="go('rules')"><span class="e">📋</span><div><div class="t">Правила</div><div class="s">Спільноти OTF</div></div></div>
+      <div class="pill" onclick="go('swim')"><span class="e">🏊</span><div><div class="t">Плавання</div><div class="s">Вт/Чт/Сб</div></div></div>
+      <div class="pill" onclick="go('massage')"><span class="e">💆</span><div><div class="t">Масаж</div><div class="s">Басейн + Студія</div></div></div>
+      <div class="pill" onclick="go('rehab')"><span class="e">♻️</span><div><div class="t">Реабілітація</div><div class="s">Фізична + Психо</div></div></div>
+      <div class="pill" onclick="go('polygon')"><span class="e">🎯</span><div><div class="t">Полігон</div><div class="s">За залученістю</div></div></div>
+      <div class="pill" onclick="go('crossfit')"><span class="e">💪</span><div><div class="t">CrossFit</div><div class="s">Пн/Ср/Пт 18:00</div></div></div>
+      <div class="pill" onclick="go('wake')"><span class="e">🏄</span><div><div class="t">Wake</div><div class="s">Сезонно</div></div></div>
+      <div class="pill" onclick="go('surf')"><span class="e">🌊</span><div><div class="t">Surf</div><div class="s">Сезонно</div></div></div>
+      <div class="pill" onclick="go('karting')"><span class="e">🏎️</span><div><div class="t">Karting</div><div class="s">Ср/Чт 12:00</div></div></div>
+      <div class="pill" onclick="go('tango')"><span class="e">💃</span><div><div class="t">Tango</div><div class="s">Сб 13:00</div></div></div>
+    </div>
+  </div>
+  <div class="hsec">
+    <div class="slabel">Цінності спільноти</div>
+    <div class="vals">
+      <div class="vc"><div class="vi">🤝</div><div class="vt">Спільнота, не сервіс</div><div class="vd">OTF — люди навколо спільних цілей. Участь = бути частиною процесу.</div></div>
+      <div class="vc"><div class="vi">🫂</div><div class="vt">Повага</div><div class="vd">Неприйнятні: знецінення, тиск, агресія. Поважаємо людей, межі, час.</div></div>
+      <div class="vc"><div class="vi">🔄</div><div class="vt">Взаємність</div><div class="vd">Важливо не лише "що отримую?", а й "що привношу?".</div></div>
+      <div class="vc"><div class="vi">💬</div><div class="vt">Конструктив</div><div class="vd">Якщо щось не працює — говоримо через запитання і пропозиції.</div></div>
+      <div class="vc"><div class="vi">⚡</div><div class="vt">Ресурс</div><div class="vd">Цінуємо час, енергію, увагу та емоційний ресурс одне одного.</div></div>
+      <div class="vc"><div class="vi">🌱</div><div class="vt">Щоденна підтримка</div><div class="vd">14 грн/день (420 грн/міс) через monoBASE — внесок у спільне.</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- RULES -->
+<div class="panel" id="p-rules">
+  <div class="wrap">
+    <div class="back" onclick="go('home')">← Назад</div>
+    <div class="ph"><span class="em">📋</span><div class="pt">Правила спільноти OTF</div><p class="pd">Спільні правила для всіх, хто є частиною OTF.</p></div>
+    <div class="block">
+      <div class="btitle" style="color:var(--blue)">🤝 Що таке OTF</div>
+      <p class="btext">OTF – це спільнота, а не сервіс. Тут люди об'єднуються навколо спільних цілей, ідей та проєктів. Ми не працюємо в логіці "запит → виконання".</p>
+    </div>
+    <div class="block">
+      <div class="btitle" style="color:var(--green)">Основні принципи</div>
+      <p class="btext"><strong>🙌 Участь — добровільна.</strong> Кожен сам обирає рівень залученості. Внесок — це можливість, а не примус.</p>
+      <div class="div"></div>
+      <p class="btext"><strong>🫂 Повага — обов'язкова.</strong> Неприйнятні: знецінення, тиск, агресія, маніпуляції. Поважаємо людей, межі, час і ресурс.</p>
+      <div class="div"></div>
+      <p class="btext"><strong>💬 Конструктив.</strong> Якщо щось не працює — говоримо через запитання, пропозиції, зворотний зв'язок. Мета — покращувати, не звинувачувати.</p>
+      <div class="div"></div>
+      <p class="btext"><strong>🔄 Взаємність.</strong> Важливо не лише "що отримую?", а й "що привношу?". Спільнота тримається на взаємності.</p>
+      <div class="div"></div>
+      <p class="btext"><strong>🤙 Домовленості важливіші за очікування.</strong> Краще домовлятися прямо і ясно, ніж очікувати автоматичної реакції.</p>
+      <div class="div"></div>
+      <p class="btext"><strong>⚡ Бережемо ресурс одне одного.</strong> Цінуємо час, енергію, увагу та емоційний ресурс.</p>
+    </div>
+    <div class="block">
+      <div class="btitle" style="color:var(--ukraine-yellow)">🌱 Щоденна підтримка спільноти</div>
+      <p class="btext">OTF існує завдяки людям, які свідомо обрали бути його частиною — не лише на тренуваннях, а й у щоденній відповідальності.</p>
+      <div class="info"><span>💳</span><div class="bx"><strong>14 грн на день (420 грн на місяць)</strong> через <a href="https://base.monobank.ua/DdMfDFauyfcz3M" target="_blank" style="color:var(--blue)">Monobase</a><br><br>💡 Це не оплата за послуги — це внесок у спільне.<br>🤲 Якщо фінансово складно — скажи особисто. Знайдемо рішення.</div></div>
+    </div>
+    <div class="block">
+      <div class="btitle" style="color:var(--green)">✅ Коротко</div>
+      <div class="two">
+        <div class="si"><span>🫂</span> Поважати людей і межі</div>
+        <div class="si"><span>🔄</span> Не лише отримувати</div>
+        <div class="si"><span>💬</span> Комунікувати чесно</div>
+        <div class="si"><span>🤙</span> Домовлятись прямо</div>
+        <div class="si"><span>⚡</span> Берегти ресурс інших</div>
+        <div class="si"><span>⚖️</span> Єдині правила для всіх</div>
+      </div>
+    </div>
+    <div class="block">
+      <div class="btitle" style="color:var(--amber)">Загальні правила активностей</div>
+      <ul class="rl">
+        <li><strong>Записався = плануєш бути</strong> — відповідальне ставлення до запису</li>
+        <li><strong>Голос = намір</strong> — не просто "цікаво подивитись"</li>
+        <li><strong>Завчасне попередження</strong> у разі змін планів</li>
+        <li><strong>Пріоритет</strong> — тим, хто регулярно бере участь</li>
+        <li><strong>Взаємність</strong> — OTF створює можливості, у відповідь очікуємо включеність</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- SWIM -->
+<div class="panel" id="p-swim">
+  <div class="wrap">
+    <div class="back" onclick="go('home')">← Назад</div>
+    <div class="ph"><span class="em">🏊</span><div class="pt" style="color:var(--blue)">OTF SWIM</div><p class="pd">Плавання 3 рази на тиждень у двох форматах.</p></div>
+    <div class="block">
+      <div class="btitle" style="color:var(--blue)">Розклад</div>
+      <div class="sg">
+        <div class="sc"><div class="st" style="color:var(--blue)">12:00–13:00</div><div class="sl"><strong>Початківці</strong><br>Критий басейн 25м<br>Вт / Чт / Сб</div></div>
+        <div class="sc"><div class="st" style="color:var(--blue)">13:00–14:00</div><div class="sl"><strong>SWIM SPORT</strong><br>Великий басейн 50м<br>Команда + з дозволу тренера</div></div>
+      </div>
+      <a class="loc" href="https://maps.app.goo.gl/WFRgKi5kVaqoK2Pf7" target="_blank">📍 Басейн Юність — на картах</a>
+      <div class="info"><span>🔑</span><div class="bx"><strong>Кодове слово на вході:</strong> група Феофанія</div></div>
+    </div>
+    <div class="block">
+      <div class="btitle" style="color:var(--blue)">Що потрібно</div>
+      <ul class="rl">
+        <li><strong>Довідка від лікаря</strong> про можливість відвідування басейну</li>
+        <li><strong>Плавки / купальник</strong></li>
+        <li><strong>Змінне взуття</strong></li>
+        <li><strong>Рушник</strong></li>
+        <li><strong>200 грн</strong> — застава за ключ (повертається)</li>
+      </ul>
+    </div>
+    <div class="block">
+      <div class="btitle" style="color:var(--blue)">Важливо</div>
+      <div class="warn"><span>⏰</span><div class="bx">Тренування починається рівно о 12:00 — <strong>приходь заздалегідь</strong>.</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- MASSAGE -->
+<div class="panel" id="p-massage">
+  <div class="wrap">
+    <div class="back" onclick="go('home')">← Назад</div>
+    <div class="ph"><span class="em">💆</span><div class="pt" style="color:var(--teal)">Масаж OTF</div><p class="pd">Два формати — після тренувань у басейні та у студії PHYSIOKEY.</p></div>
+    <div class="block">
+      <div class="btitle" style="color:var(--teal)">Партнер</div>
+      <div class="partner"><span style="font-size:26px">🏥</span><div><div class="pname">PHYSIOKEY</div><a class="plink" href="https://www.instagram.com/physiokey.ua" target="_blank">@physiokey.ua</a><div class="paddr">📍 Басейн Юність: вул. Бастіонна, 7, Київ</div><div class="paddr">📍 Студія: вул. Богдана Хмельницького, 59, Київ</div></div></div>
+    </div>
+    <div class="block">
+      <div class="btitle" style="color:var(--teal)">Загальні умови</div>
+      <div class="ok"><span>✅</span><div class="bx"><strong>Більшість процедур безкоштовні</strong> для учасників спільноти.</div></div>
+      <div class="info"><span>💊</span><div class="bx">Учасник оплачує: <strong>лікарські засоби</strong> та <strong>ортопедичні вироби</strong>. Компенсація — індивідуально з OTF.</div></div>
+    </div>
+    <div class="block">
+      <div class="btitle" style="color:var(--red)">Відповідальність за запис</div>
+      <p class="btext">У разі <strong>повторних порушень</strong> — 50% вартості процедури:</p>
+      <ul class="rl">
+        <li>Пропуск без попередження</li>
+        <li>Скасування менш ніж за 12 годин</li>
+        <li>Запізнення більше ніж на 10 хвилин</li>
+      </ul>
+      <div class="warn"><span>⚠️</span><div class="bx">Перший випадок покриває OTF. При неоплаті — <strong>доступ обмежується на 3 місяці</strong>.</div></div>
+    </div>
+    <div class="block">
+      <div class="btitle" style="color:var(--teal)">🏊 Масаж після тренувань (басейн)</div>
+      <p class="btext">Пріоритет мають учасники, які регулярно відвідують тренування, давно не були на масажі або мають особливу потребу.</p>
+      <div class="info"><span>📅</span><div class="bx">Графік — на початку тижня. <strong>Мінімум 2 записи</strong> — інакше масажист не виїжджає.</div></div>
+      <div class="warn"><span>⚠️</span><div class="bx">Не з'явились без попередження — переміщуєтесь у кінець списку пріоритету.</div></div>
+    </div>
+    <div class="block">
+      <div class="btitle" style="color:var(--teal)">🏢 Масаж у студії PHYSIOKEY</div>
+      <p class="btext">Якщо не потрапили на масаж у басейні — можна записатися до студії.</p>
+      <div class="info"><span>📞</span><div class="bx">Зв'яжіться з PHYSIOKEY та узгодьте зручний час завчасно.</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- REHAB -->
+<div class="panel" id="p-rehab">
+  <div class="wrap">
+    <div class="back" onclick="go('home')">← Назад</div>
+    <div class="ph"><span class="em">♻️</span><div class="pt" style="color:var(--green)">Реабілітація та відновлення</div><p class="pd">Два напрями для діючих військовослужбовців і ветеранів.</p></div>
+    <div class="block">
+      <div class="btitle" style="color:var(--green)">Загальні умови</div>
+      <div class="ok"><span>✅</span><div class="bx"><strong>Більшість процедур безкоштовні</strong> для учасників.</div></div>
+      <div class="info"><span>💊</span><div class="bx">Учасник оплачує лікарські засоби та ортопедичні вироби. Компенсація — індивідуально.</div></div>
+      <div class="warn"><span>⚠️</span><div class="bx">Повторні порушення — 50% вартості. Перший випадок покриває OTF. Неоплата — обмеження доступу на 3 місяці.</div></div>
+    </div>
+    <div class="block">
+      <div class="btitle" style="color:var(--blue)">🏃 Фізичне відновлення — PHYSIOKEY</div>
+      <div class="partner"><span style="font-size:26px">🏥</span><div><div class="pname">PHYSIOKEY</div><a class="plink" href="https://www.instagram.com/physiokey.ua" target="_blank">@physiokey.ua</a><div class="paddr">📍 вул. Богдана Хмельницького, 59, Київ</div></div></div>
+      <div class="sc" style="margin-bottom:8px"><p style="font-size:13px;font-weight:700;color:var(--blue);margin-bottom:6px">🎯 PIT STOP — для діючих військовослужбовців</p><ul class="rl"><li>Для ротації або відпустки після бойових дій</li><li>Швидке відновлення (спина, поперек, коліно)</li><li>Запис до спеціалістів "Майстер" / "Молодший спеціаліст"</li><li><strong style="color:var(--green)">Безкоштовно</strong></li></ul></div>
+      <div class="sc" style="margin-bottom:8px"><p style="font-size:13px;font-weight:700;color:var(--blue);margin-bottom:6px">💆 Курси масажу для військових</p><ul class="rl"><li>10 сеансів раз на 6 місяців</li><li>OTF компенсує 500 грн за процедуру</li></ul></div>
+      <div class="sc"><p style="font-size:13px;font-weight:700;color:var(--blue);margin-bottom:6px">♻️ Реабілітація після поранень</p><ul class="rl"><li>Індивідуальний план відновлення</li><li>Терапія, масаж, інші процедури</li><li><strong style="color:var(--green)">Безкоштовно</strong></li></ul></div>
+      <div class="info" style="margin-top:10px"><span>📞</span><div class="bx">Зв'яжіться з PHYSIOKEY та узгодьте зручний час завчасно.</div></div>
+    </div>
+    <div class="block">
+      <div class="btitle" style="color:var(--purple)">🧠 Психо-емоційне відновлення</div>
+      <div class="partner"><span style="font-size:26px">🧠</span><div><div class="pname">Антоніна Картушинська</div><a class="plink" href="https://www.instagram.com/kartushynska.clinic" target="_blank">@kartushynska.clinic</a><div class="paddr">📍 вул. Дмитрівська, 35-Г, Київ</div></div></div>
+      <div class="two" style="margin:12px 0">
+        <div class="si"><span>🤝</span> Добровільність</div>
+        <div class="si"><span>🔒</span> Конфіденційність</div>
+        <div class="si"><span>🛡️</span> Безпека і повага</div>
+        <div class="si"><span>📅</span> Регулярність</div>
+      </div>
+      <ul class="rl">
+        <li>Формат і частота — індивідуальні</li>
+        <li>Участь може бути безкоштовною або частково компенсованою</li>
+        <li>Кількість місць обмежена — пріоритет для регулярних</li>
+      </ul>
+      <div class="info" style="margin-top:10px"><span>📞</span><div class="bx">Зв'яжіться з Антоніною Картушинською та узгодьте зручний час завчасно.</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- POLYGON -->
+<div class="panel" id="p-polygon">
+  <div class="wrap">
+    <div class="back" onclick="go('home')">← Назад</div>
+    <div class="ph"><span class="em">🎯</span><div class="pt" style="color:var(--amber)">Полігон OTF</div><p class="pd">Винятковий формат — не базова активність, а можливість через залученість.</p></div>
+    <div class="block">
+      <div class="btitle" style="color:var(--amber)">Принцип доступу</div>
+      <div class="warn"><span>🎯</span><div class="bx">Участь <strong>не відкрита для всіх</strong> і не за принципом "записався – потрапив".</div></div>
+      <p class="btext" style="margin-top:12px"><strong>Що враховується:</strong></p>
+      <ul class="rl">
+        <li>Активність у житті спільноти</li>
+        <li>Регулярність участі в інших напрямках</li>
+        <li>Відповідальність і надійність</li>
+        <li>Готовність вкладатися у спільний процес</li>
+      </ul>
+      <div class="info" style="margin-top:10px"><span>💡</span><div class="bx">Доступ — це про <strong>залученість</strong>, а не про випадковість.</div></div>
+    </div>
+    <div class="block">
+      <div class="btitle" style="color:var(--amber)">Формування груп</div>
+      <ul class="rl">
+        <li>Групи формуються організаторами</li>
+        <li>Кількість місць обмежена</li>
+        <li>Склад може змінюватися залежно від формату та фінансування</li>
+      </ul>
+    </div>
+    <div class="block">
+      <div class="btitle" style="color:var(--amber)">Відповідальність</div>
+      <ul class="rl">
+        <li>Чітке дотримання правил безпеки</li>
+        <li>Виконання інструкцій інструкторів</li>
+        <li>Повага до формату та учасників</li>
+      </ul>
+      <div class="warn" style="margin-top:10px"><span>⚠️</span><div class="bx">Недотримання може бути підставою для <strong>обмеження доступу</strong>.</div></div>
+    </div>
+    <div class="block" style="background:var(--amber-bg);border-color:rgba(245,158,11,0.3)">
+      <p style="font-size:14px;font-weight:600;color:var(--text);text-align:center;line-height:1.7">Полігон — це не "нагорода за участь", а можливість, що з'являється там, де є <strong>відповідальність, включеність і залученість</strong>.</p>
+    </div>
+  </div>
+</div>
+
+<!-- CROSSFIT -->
+<div class="panel" id="p-crossfit">
+  <div class="wrap">
+    <div class="back" onclick="go('home')">← Назад</div>
+    <div class="ph"><span class="em">💪</span><div class="pt" style="color:var(--orange)">CrossFit OTF</div><p class="pd">Тренування з Віктором Набоком — тричі на тиждень.</p></div>
+    <div class="block">
+      <div class="btitle" style="color:var(--orange)">Розклад</div>
+      <div class="sc"><div class="st" style="color:var(--orange)">18:00</div><div class="sl"><strong>Понеділок / Середа / П'ятниця</strong><br>Тренер: Віктор Набок</div></div>
+      <a class="loc" href="https://maps.app.goo.gl/HwNSF3ZuQ6zrwX8Q9" target="_blank">📍 CrossFit BANDA — на картах</a>
+    </div>
+    <div class="block">
+      <div class="btitle" style="color:var(--orange)">Що потрібно</div>
+      <ul class="rl">
+        <li>Підтвердити присутність через /my-plan</li>
+        <li>Приїхати вчасно</li>
+        <li>Змінний одяг та все для душу</li>
+      </ul>
+    </div>
+    <div class="block">
+      <div class="btitle" style="color:var(--orange)">Важливо</div>
+      <div class="warn"><span>⚠️</span><div class="bx">Неактивні учасники (6 місяців / сезон) можуть бути виключені зі складу групи.<br>✅ Завжди можна повернутись, відновивши участь.</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- WAKE -->
+<div class="panel" id="p-wake">
+  <div class="wrap">
+    <div class="back" onclick="go('home')">← Назад</div>
+    <div class="ph"><span class="em">🏄</span><div class="pt" style="color:var(--blue)">WAKE OTF</div><p class="pd">Вейкборд — сезонна активність спільноти.</p></div>
+    <div class="block">
+      <div class="btitle" style="color:var(--blue)">Розклад</div>
+      <div class="sc" style="margin-bottom:10px"><div class="st" style="color:var(--blue)">Уточнюється</div><div class="sl">Розклад оновлюється кожного тижня в каналі</div></div>
+      <a class="loc" href="https://maps.app.goo.gl/RpRSvsy7xd3qyAyt6" target="_blank">📍 STAV 14 — на картах</a>
+    </div>
+    <div class="block">
+      <div class="btitle" style="color:var(--blue)">Що потрібно</div>
+      <ul class="rl">
+        <li>Підтвердити присутність</li>
+        <li>Приїхати вчасно</li>
+        <li>Змінний одяг</li>
+      </ul>
+    </div>
+    <div class="block">
+      <div class="btitle" style="color:var(--blue)">Важливо</div>
+      <div class="warn"><span>⚠️</span><div class="bx">Неактивні учасники (6 місяців / сезон) можуть бути виключені зі складу групи.<br>✅ Завжди можна повернутись, відновивши участь.</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- SURF -->
+<div class="panel" id="p-surf">
+  <div class="wrap">
+    <div class="back" onclick="go('home')">← Назад</div>
+    <div class="ph"><span class="em">🌊</span><div class="pt" style="color:var(--teal)">SURF OTF</div><p class="pd">Вейксерф — сезонна активність спільноти.</p></div>
+    <div class="block">
+      <div class="btitle" style="color:var(--teal)">Розклад</div>
+      <div class="sc" style="margin-bottom:10px"><div class="st" style="color:var(--teal)">Уточнюється</div><div class="sl">Розклад оновлюється кожного тижня в каналі</div></div>
+      <a class="loc" href="https://maps.app.goo.gl/ugBZzujfz8uY8e946" target="_blank">📍 BREAK WATER — на картах</a>
+    </div>
+    <div class="block">
+      <div class="btitle" style="color:var(--teal)">Що потрібно</div>
+      <ul class="rl">
+        <li>Підтвердити присутність</li>
+        <li>Приїхати вчасно</li>
+        <li>Змінний одяг</li>
+      </ul>
+    </div>
+    <div class="block">
+      <div class="btitle" style="color:var(--teal)">Важливо</div>
+      <div class="warn"><span>⚠️</span><div class="bx">Неактивні учасники (6 місяців / сезон) можуть бути виключені зі складу групи.<br>✅ Завжди можна повернутись, відновивши участь.</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- KARTING -->
+<div class="panel" id="p-karting">
+  <div class="wrap">
+    <div class="back" onclick="go('home')">← Назад</div>
+    <div class="ph"><span class="em">🏎️</span><div class="pt" style="color:var(--red)">KARTинг OTF</div><p class="pd">Картинг — тренуємо швидкість двічі на тиждень.</p></div>
+    <div class="block">
+      <div class="btitle" style="color:var(--red)">Розклад</div>
+      <div class="sg">
+        <div class="sc"><div class="st" style="color:var(--red)">Середа 12:00</div><div class="sl">INGUL KART</div><a class="loc" href="https://maps.app.goo.gl/cKrAXtHFC3vu1hZEA" target="_blank" style="font-size:11px;padding:6px 10px;margin-top:6px">📍 На картах</a></div>
+        <div class="sc"><div class="st" style="color:var(--red)">Четвер 12:00</div><div class="sl">7DRIVE</div><a class="loc" href="https://maps.app.goo.gl/KYveGCWU62eAr1Py8" target="_blank" style="font-size:11px;padding:6px 10px;margin-top:6px">📍 На картах</a></div>
+      </div>
+    </div>
+    <div class="block">
+      <div class="btitle" style="color:var(--red)">Що потрібно</div>
+      <ul class="rl">
+        <li>Підтвердити присутність</li>
+        <li>Приїхати вчасно</li>
+      </ul>
+    </div>
+    <div class="block">
+      <div class="btitle" style="color:var(--red)">Важливо</div>
+      <div class="warn"><span>⚠️</span><div class="bx">Неактивні учасники (6 місяців / сезон) можуть бути виключені зі складу групи.<br>✅ Завжди можна повернутись, відновивши участь.</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- TANGO -->
+<div class="panel" id="p-tango">
+  <div class="wrap">
+    <div class="back" onclick="go('home')">← Назад</div>
+    <div class="ph"><span class="em">💃</span><div class="pt" style="color:var(--pink)">ТАНГО OTF</div><p class="pd">Мистецтво танцю — щосуботи разом.</p></div>
+    <div class="block">
+      <div class="btitle" style="color:var(--pink)">Розклад</div>
+      <div class="sc" style="margin-bottom:10px"><div class="st" style="color:var(--pink)">Субота 13:00</div><div class="sl">TANGO ELEGANTE</div></div>
+      <a class="loc" href="https://maps.app.goo.gl/vBiMcKUVMBy7uKC17" target="_blank">📍 TANGO ELEGANTE — на картах</a>
+    </div>
+    <div class="block">
+      <div class="btitle" style="color:var(--pink)">Що потрібно</div>
+      <ul class="rl">
+        <li>Підтвердити присутність</li>
+        <li>Приїхати вчасно</li>
+        <li>Змінне взуття (і може одяг)</li>
+      </ul>
+      <div class="ok" style="margin-top:10px"><span>💃</span><div class="bx"><strong>ПРИХОДЬТЕ ЗІ СВОЇМ ПАРТНЕРОМ — ВАМ ГАРАНТОВАНО СПОДОБАЄТЬСЯ!</strong></div></div>
+    </div>
+    <div class="block">
+      <div class="btitle" style="color:var(--pink)">Важливо</div>
+      <div class="warn"><span>⚠️</span><div class="bx">Неактивні учасники (6 місяців / сезон) можуть бути виключені зі складу групи.<br>✅ Завжди можна повернутись, відновивши участь.</div></div>
+    </div>
+  </div>
+</div>
+
+<footer><strong style="color:var(--muted)">ONE TEAM FORCES</strong> &nbsp;·&nbsp; Слава Україні 🇺🇦</footer>
+
+<script>
+function go(name) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-link').forEach(b => b.classList.remove('active'));
+  const p = document.getElementById('p-' + name);
+  if (p) { p.classList.add('active'); window.scrollTo({top:0,behavior:'smooth'}); }
+  document.querySelectorAll('.nav-link').forEach(b => {
+    if (b.getAttribute('onclick') === "go('" + name + "')") b.classList.add('active');
+  });
+}
+function toggleMob() {
+  document.getElementById('mob').classList.toggle('open');
+}
+document.addEventListener('click', e => {
+  const m = document.getElementById('mob');
+  if (!m.contains(e.target) && !e.target.closest('.hamburger')) m.classList.remove('open');
+});
+</script>
+</body>
+</html>
