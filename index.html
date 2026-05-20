@@ -1,0 +1,845 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OTF Discord — Довідник команд</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Unbounded:wght@600;700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#0d0d10;--bg2:#15151a;--bg3:#1c1c23;--bg4:#232330;
+  --border:#2a2a38;--border2:#3a3a50;
+  --text:#e4e4f0;--muted:#6b6b88;--hint:#4a4a62;
+  --green:#22c55e;--green-dim:#16a34a;--green-bg:rgba(34,197,94,0.08);
+  --amber:#f59e0b;--amber-dim:#d97706;--amber-bg:rgba(245,158,11,0.08);
+  --purple:#a78bfa;--purple-dim:#7c3aed;--purple-bg:rgba(167,139,250,0.08);
+  --pink:#f472b6;--pink-dim:#db2777;--pink-bg:rgba(244,114,182,0.08);
+  --blue:#60a5fa;--blue-dim:#2563eb;--blue-bg:rgba(96,165,250,0.08);
+  --discord:#313338;--discord2:#2b2d31;--discord3:#1e1f22;
+}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'Manrope',sans-serif;min-height:100vh;overflow-x:hidden;line-height:1.6}
+
+/* ── NOISE ── */
+body::before{content:'';position:fixed;inset:0;opacity:0.025;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");pointer-events:none;z-index:0}
+
+/* ── GRID BG ── */
+body::after{content:'';position:fixed;inset:0;background-image:linear-gradient(var(--border) 1px,transparent 1px),linear-gradient(90deg,var(--border) 1px,transparent 1px);background-size:60px 60px;opacity:0.2;pointer-events:none;z-index:0}
+
+/* ── HERO ── */
+.hero{position:relative;z-index:1;text-align:center;padding:80px 24px 60px}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;padding:6px 16px;border-radius:20px;border:1px solid var(--border2);background:var(--bg2);font-size:12px;color:var(--muted);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:24px}
+.hero-badge span{width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.5;transform:scale(0.8)}}
+h1{font-family:'Unbounded',sans-serif;font-size:clamp(32px,6vw,64px);font-weight:700;line-height:1.05;margin-bottom:20px;letter-spacing:-1px}
+h1 em{font-style:normal;background:linear-gradient(135deg,var(--blue),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero-sub{font-size:16px;color:var(--muted);max-width:520px;margin:0 auto 48px;line-height:1.7}
+
+/* ── ROLE TABS ── */
+.tabs{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;position:relative;z-index:1;padding:0 16px 40px}
+.tab{display:flex;align-items:center;gap:8px;padding:12px 22px;border-radius:12px;border:1px solid var(--border);background:var(--bg2);color:var(--muted);font-size:14px;font-weight:600;cursor:pointer;transition:all 0.2s;font-family:'Manrope',sans-serif;position:relative;overflow:hidden}
+.tab::before{content:'';position:absolute;inset:0;opacity:0;transition:opacity 0.2s}
+.tab:hover{border-color:var(--border2);color:var(--text)}
+.tab.active-member{background:var(--green-bg);border-color:var(--green-dim);color:var(--green)}
+.tab.active-coach{background:var(--amber-bg);border-color:var(--amber-dim);color:var(--amber)}
+.tab.active-staff{background:var(--purple-bg);border-color:var(--purple-dim);color:var(--purple)}
+.tab.active-guest{background:var(--pink-bg);border-color:var(--pink-dim);color:var(--pink)}
+.tab-emoji{font-size:18px}
+
+/* ── PANELS ── */
+.panels{max-width:1000px;margin:0 auto;padding:0 20px 100px;position:relative;z-index:1}
+.panel{display:none;animation:fadeIn 0.3s ease}
+.panel.show{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── SECTION ── */
+.section{margin-bottom:48px}
+.section-label{font-size:11px;letter-spacing:2.5px;text-transform:uppercase;color:var(--hint);font-weight:700;margin-bottom:16px;display:flex;align-items:center;gap:10px}
+.section-label::after{content:'';flex:1;height:1px;background:var(--border)}
+
+/* ── CMD CARDS ── */
+.cmd-grid{display:grid;gap:12px}
+.cmd-card{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:18px 20px;cursor:pointer;transition:all 0.2s;position:relative;overflow:hidden}
+.cmd-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;border-radius:3px 0 0 3px;opacity:0;transition:opacity 0.2s}
+.cmd-card:hover{border-color:var(--border2);background:var(--bg3)}
+.cmd-card.open{border-color:var(--border2);background:var(--bg3)}
+.cmd-card.open::before{opacity:1}
+.cmd-header{display:flex;align-items:center;gap:14px}
+.cmd-num{width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0}
+.cmd-title-wrap{flex:1}
+.cmd-name{font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:600;margin-bottom:2px}
+.cmd-short{font-size:13px;color:var(--muted)}
+.cmd-chevron{font-size:12px;color:var(--hint);transition:transform 0.2s}
+.cmd-card.open .cmd-chevron{transform:rotate(180deg)}
+.cmd-detail{display:none;margin-top:16px;padding-top:16px;border-top:1px solid var(--border)}
+.cmd-card.open .cmd-detail{display:block}
+
+.detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
+@media(max-width:600px){.detail-grid{grid-template-columns:1fr}}
+.detail-block{background:var(--bg4);border-radius:10px;padding:12px 14px}
+.detail-label{font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:6px;opacity:0.7}
+.detail-val{font-size:13px;line-height:1.6}
+
+.result-box{background:var(--bg4);border-radius:10px;padding:12px 14px;margin-bottom:12px}
+.result-label{font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;opacity:0.7}
+
+/* ── SIM ── */
+.sim-wrap{background:var(--bg4);border-radius:10px;overflow:hidden;margin-top:4px}
+.sim-bar{padding:10px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px}
+.sim-dot{width:8px;height:8px;border-radius:50%}
+.sim-chan{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--muted)}
+.sim-body{padding:14px;background:var(--discord);min-height:60px}
+.sim-msg{display:flex;gap:10px;margin-bottom:14px;opacity:0;transform:translateY(6px);transition:all 0.35s}
+.sim-msg.show{opacity:1;transform:translateY(0)}
+.sim-av{width:34px;height:34px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff}
+.sim-c{flex:1}
+.sim-auth{font-size:12px;font-weight:600;color:#fff;margin-bottom:4px}
+.sim-auth small{font-size:10px;color:#72767d;font-weight:400;margin-left:6px}
+.sim-text{font-size:12px;color:#dcddde;line-height:1.6;background:var(--discord2);border-radius:0 8px 8px 8px;padding:8px 12px;display:inline-block;max-width:100%}
+.sim-code{font-family:'JetBrains Mono',monospace;background:var(--discord3);color:#b9bbbe;padding:1px 6px;border-radius:3px;font-size:11px}
+.sim-btn{display:inline-block;padding:3px 10px;border-radius:10px;font-size:11px;font-weight:600;margin:4px 4px 0 0}
+.play-row{padding:10px 14px;border-top:1px solid var(--border);display:flex;align-items:center;gap:10px}
+.play-btn{padding:7px 16px;border-radius:8px;border:none;font-size:12px;font-weight:600;cursor:pointer;font-family:'Manrope',sans-serif;transition:all 0.15s}
+.play-status{font-size:12px;color:var(--muted)}
+
+/* ── AUTO TABLE ── */
+.auto-table{width:100%;border-collapse:collapse;font-size:13px}
+.auto-table th{padding:10px 12px;text-align:left;font-size:11px;letter-spacing:1px;text-transform:uppercase;font-weight:700;border-bottom:1px solid var(--border)}
+.auto-table td{padding:10px 12px;border-bottom:1px solid var(--border);vertical-align:top;line-height:1.5}
+.auto-table tr:last-child td{border-bottom:none}
+.auto-table tr:hover td{background:var(--bg4)}
+
+/* ── FLOW ── */
+.flow{display:flex;flex-direction:column;gap:0}
+.flow-row{display:flex;gap:16px;padding:10px 0}
+.flow-spine{display:flex;flex-direction:column;align-items:center;flex-shrink:0}
+.flow-circle{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0}
+.flow-line{width:2px;flex:1;min-height:16px}
+.flow-content{padding-top:6px;flex:1}
+.flow-name{font-size:14px;font-weight:600;margin-bottom:3px}
+.flow-desc{font-size:13px;color:var(--muted);line-height:1.5}
+
+/* ── CHANNEL TABLE ── */
+.ch-table{display:flex;flex-direction:column;gap:6px}
+.ch-row{display:flex;align-items:center;gap:12px;padding:10px 14px;background:var(--bg2);border-radius:10px;border:1px solid var(--border)}
+.ch-name{font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:600;min-width:220px}
+.ch-desc{font-size:13px;color:var(--muted);flex:1}
+.ch-access{font-size:12px;font-weight:600;white-space:nowrap}
+
+/* ── TIP ── */
+.tip{display:flex;gap:12px;padding:14px 16px;border-radius:12px;font-size:13px;line-height:1.6;margin-top:8px}
+.tip-icon{font-size:16px;flex-shrink:0;margin-top:1px}
+
+/* ── CRON ── */
+.cron-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media(max-width:600px){.cron-grid{grid-template-columns:1fr}}
+.cron-card{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:14px 16px}
+.cron-time{font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:600;margin-bottom:6px}
+.cron-who{font-size:11px;font-weight:700;letter-spacing:0.5px;text-transform:uppercase;margin-bottom:4px;opacity:0.6}
+.cron-desc{font-size:13px;color:var(--muted);line-height:1.5}
+
+/* ── SHEETS TABLE ── */
+.sheets-table{display:flex;flex-direction:column;gap:8px}
+.sheet-row{display:flex;gap:14px;padding:12px 16px;background:var(--bg2);border:1px solid var(--border);border-radius:12px;align-items:flex-start}
+.sheet-name{font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:600;min-width:140px;padding-top:1px}
+.sheet-desc{font-size:13px;color:var(--muted);line-height:1.5;flex:1}
+
+footer{text-align:center;padding:40px 20px;font-size:12px;color:var(--hint);border-top:1px solid var(--border);position:relative;z-index:1}
+footer strong{color:var(--muted)}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-badge"><span></span>OTF Discord Bot</div>
+  <h1>Довідник<br><em>команд</em></h1>
+  <p class="hero-sub">Обери свою роль і дізнайся, які команди доступні, де їх запускати і що вони роблять</p>
+</div>
+
+<div class="tabs">
+  <button class="tab active-member" onclick="switchRole('member',this)" id="tab-member">
+    <span class="tab-emoji">🪖</span> Учасник
+  </button>
+  <button class="tab" onclick="switchRole('coach',this)" id="tab-coach">
+    <span class="tab-emoji">🏋️</span> Тренер
+  </button>
+  <button class="tab" onclick="switchRole('staff',this)" id="tab-staff">
+    <span class="tab-emoji">⚙️</span> Staff
+  </button>
+  <button class="tab" onclick="switchRole('guest',this)" id="tab-guest">
+    <span class="tab-emoji">👋</span> Гість
+  </button>
+</div>
+
+<div class="panels">
+
+<!-- ══ MEMBER ══ -->
+<div class="panel show" id="panel-member">
+
+  <div class="section">
+    <div class="section-label">Твої команди</div>
+    <div class="cmd-grid">
+
+      <div class="cmd-card open" id="cmd-myplan" onclick="toggleCmd(this)" style="--accent:var(--green)">
+        <div class="cmd-card::before" style="background:var(--green)"></div>
+        <div class="cmd-header">
+          <div class="cmd-num" style="background:var(--green-bg);color:var(--green)">1</div>
+          <div class="cmd-title-wrap">
+            <div class="cmd-name" style="color:var(--green)">/my-plan</div>
+            <div class="cmd-short">Мій тижневий план тренувань</div>
+          </div>
+          <div class="cmd-chevron">▼</div>
+        </div>
+        <div class="cmd-detail">
+          <div class="detail-grid">
+            <div class="detail-block">
+              <div class="detail-label" style="color:var(--green)">Де запускати</div>
+              <div class="detail-val">Будь-який канал або #мій-план</div>
+            </div>
+            <div class="detail-block">
+              <div class="detail-label" style="color:var(--green)">Параметри</div>
+              <div class="detail-val">Без параметрів — просто надіслати</div>
+            </div>
+          </div>
+          <div class="result-box">
+            <div class="result-label" style="color:var(--green)">Що побачиш</div>
+            <div class="detail-val">Список тренувань на поточний тиждень, згруповані за активністю. Кнопки: <strong>✅ Confirm All</strong> — підтвердити всі, <strong>❌ Opt Out</strong> — відмовитись від обраних, <strong>🔄 Re-join</strong> — повернутись до відхилених. Внизу — майбутні події за межами тижня.</div>
+          </div>
+          <div class="sim-wrap">
+            <div class="sim-bar">
+              <div class="sim-dot" style="background:#ed4245"></div>
+              <div class="sim-dot" style="background:#faa61a"></div>
+              <div class="sim-dot" style="background:#57f287"></div>
+              <div class="sim-chan"># мій-план</div>
+            </div>
+            <div class="sim-body" id="s-myplan">
+              <div class="sim-msg show" id="mp1">
+                <div class="sim-av" style="background:#555">ВА</div>
+                <div class="sim-c"><div class="sim-auth">veteran_oleh<small>сьогодні о 10:30</small></div>
+                <div class="sim-text"><span class="sim-code">/my-plan</span></div></div>
+              </div>
+              <div class="sim-msg" id="mp2">
+                <div class="sim-av" style="background:#5865F2">B</div>
+                <div class="sim-c"><div class="sim-auth">OTF BOT<small>сьогодні о 10:30</small></div>
+                <div class="sim-text"><strong>📅 Ваш план — 19–25 трав.</strong><br>🏊 <strong>SWIM</strong><br>&nbsp;&nbsp;⏳ Вт 21 трав. 12:00 — початківці<br>&nbsp;&nbsp;✅ Чт 23 трав. 13:00 — великий басейн<br>💪 <strong>CROSS FIT</strong><br>&nbsp;&nbsp;⏳ Пн 19 трав. 18:00 — Вітя Набок<br><br><span class="sim-btn" style="background:#57F287;color:#111">✅ Confirm All</span><span class="sim-btn" style="background:#ED4245;color:#fff">❌ Opt Out</span><span class="sim-btn" style="background:#4f545c;color:#fff">🔄 Re-join</span></div></div>
+              </div>
+            </div>
+            <div class="play-row">
+              <button class="play-btn" style="background:var(--green);color:#fff" onclick="playSim('myplan',['mp1','mp2'],'st-myplan')">▶ Симуляція</button>
+              <span class="play-status" id="st-myplan"></span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="cmd-card" onclick="toggleCmd(this)">
+        <div class="cmd-header">
+          <div class="cmd-num" style="background:var(--green-bg);color:var(--green)">2</div>
+          <div class="cmd-title-wrap">
+            <div class="cmd-name" style="color:var(--green)">/my-profile</div>
+            <div class="cmd-short">Створити або оновити профіль в #otf-people</div>
+          </div>
+          <div class="cmd-chevron">▼</div>
+        </div>
+        <div class="cmd-detail">
+          <div class="detail-grid">
+            <div class="detail-block">
+              <div class="detail-label" style="color:var(--green)">Де запускати</div>
+              <div class="detail-val">Будь-який канал</div>
+            </div>
+            <div class="detail-block">
+              <div class="detail-label" style="color:var(--green)">Параметри</div>
+              <div class="detail-val">Без параметрів — бот відкриє форму</div>
+            </div>
+          </div>
+          <div class="result-box">
+            <div class="result-label" style="color:var(--green)">Форма містить 5 питань</div>
+            <div class="detail-val">1. Як тебе звати &nbsp; 2. Звідки ти (місто) &nbsp; 3. Чим займаєшся &nbsp; 4. Що тебе драйвить &nbsp; 5. Цікавий факт<br><br>Після заповнення — картка з аватаром та списком активностей з'явиться в <strong>#otf-people</strong>. Запусти повторно — бот оновить існуючу картку.</div>
+          </div>
+          <div class="tip" style="background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.2)">
+            <span class="tip-icon">⚠️</span>
+            <span style="color:var(--muted)">Профіль публічний — видимий всім учасникам, партнерам та спонсорам OTF. Додавай лише ту інформацію, якою хочеш поділитись.</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="cmd-card" onclick="toggleCmd(this)">
+        <div class="cmd-header">
+          <div class="cmd-num" style="background:var(--green-bg);color:var(--green)">3</div>
+          <div class="cmd-title-wrap">
+            <div class="cmd-name" style="color:var(--green)">/find-member</div>
+            <div class="cmd-short">Знайти учасника спільноти</div>
+          </div>
+          <div class="cmd-chevron">▼</div>
+        </div>
+        <div class="cmd-detail">
+          <div class="detail-grid">
+            <div class="detail-block">
+              <div class="detail-label" style="color:var(--green)">Параметри (один або кілька)</div>
+              <div class="detail-val"><strong>member</strong> — вибрати з меню Discord<br><strong>city</strong> — місто (напр. Київ)<br><strong>activity</strong> — активність (swim, crossFit...)<br><strong>keyword</strong> — будь-яке слово</div>
+            </div>
+            <div class="detail-block">
+              <div class="detail-label" style="color:var(--green)">Результат</div>
+              <div class="detail-val">Ім'я, Discord тег, місто, чим займається, що драйвить, цікавий факт, список активностей</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="cmd-card" onclick="toggleCmd(this)">
+        <div class="cmd-header">
+          <div class="cmd-num" style="background:var(--green-bg);color:var(--green)">4</div>
+          <div class="cmd-title-wrap">
+            <div class="cmd-name" style="color:var(--green)">/ask-otf</div>
+            <div class="cmd-short">Запитати бота про OTF</div>
+          </div>
+          <div class="cmd-chevron">▼</div>
+        </div>
+        <div class="cmd-detail">
+          <div class="detail-grid">
+            <div class="detail-block">
+              <div class="detail-label" style="color:var(--green)">Параметри</div>
+              <div class="detail-val"><strong>question</strong> — твоє питання текстом</div>
+            </div>
+            <div class="detail-block">
+              <div class="detail-label" style="color:var(--green)">Результат</div>
+              <div class="detail-val">Відповідь бота про активності, правила, канали OTF</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-label">Автоматичні повідомлення від бота</div>
+    <div class="cron-grid">
+      <div class="cron-card">
+        <div class="cron-time" style="color:var(--green)">Неділя 21:42</div>
+        <div class="cron-who">DM</div>
+        <div class="cron-desc">План тренувань на наступний тиждень — список всіх твоїх сесій</div>
+      </div>
+      <div class="cron-card">
+        <div class="cron-time" style="color:var(--green)">Щодня 21:21</div>
+        <div class="cron-who">DM (якщо є тренування завтра)</div>
+        <div class="cron-desc">Нагадування про завтрашні тренування</div>
+      </div>
+      <div class="cron-card">
+        <div class="cron-time" style="color:var(--green)">1-го числа 12:12</div>
+        <div class="cron-who">DM</div>
+        <div class="cron-desc">Місячний звіт: скільки відвідав, пропустив, відмовився, не відреагував</div>
+      </div>
+      <div class="cron-card">
+        <div class="cron-time" style="color:var(--green)">Через 24 год після верифікації</div>
+        <div class="cron-who">DM (один раз)</div>
+        <div class="cron-desc">Нагадування заповнити /my-profile в #otf-people</div>
+      </div>
+      <div class="cron-card" style="grid-column:1/-1">
+        <div class="cron-time" style="color:var(--green)">Неділя 21:21</div>
+        <div class="cron-who">DM + #otf-графік (якщо ідеальна відвідуваність)</div>
+        <div class="cron-desc">🎉 Привітання з картинкою — якщо відвідав всі тренування тижня</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ══ COACH ══ -->
+<div class="panel" id="panel-coach">
+
+  <div class="section">
+    <div class="section-label">Команди тренера</div>
+    <div class="cmd-grid">
+
+      <div class="cmd-card" onclick="toggleCmd(this)">
+        <div class="cmd-header">
+          <div class="cmd-num" style="background:var(--amber-bg);color:var(--amber)">1</div>
+          <div class="cmd-title-wrap">
+            <div class="cmd-name" style="color:var(--amber)">/week-plan</div>
+            <div class="cmd-short">План учасників на тиждень за активністю</div>
+          </div>
+          <div class="cmd-chevron">▼</div>
+        </div>
+        <div class="cmd-detail">
+          <div class="detail-grid">
+            <div class="detail-block">
+              <div class="detail-label" style="color:var(--amber)">Параметри</div>
+              <div class="detail-val"><strong>activity</strong> — вибрати зі списку (swim, crossFit, tango...)</div>
+            </div>
+            <div class="detail-block">
+              <div class="detail-label" style="color:var(--amber)">Результат</div>
+              <div class="detail-val">✅ Підтверджені / ⏳ Очікують / ❌ Відмовились + 👤 Індивідуальні заняття внизу</div>
+            </div>
+          </div>
+          <div class="tip" style="background:var(--amber-bg);border:1px solid rgba(245,158,11,0.2)">
+            <span class="tip-icon">💡</span>
+            <span style="color:var(--muted)">Для масажу або активностей з багатьма сесіями — бот розбиває відповідь на кілька повідомлень.</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="cmd-card" onclick="toggleCmd(this)">
+        <div class="cmd-header">
+          <div class="cmd-num" style="background:var(--amber-bg);color:var(--amber)">2</div>
+          <div class="cmd-title-wrap">
+            <div class="cmd-name" style="color:var(--amber)">/post-personal</div>
+            <div class="cmd-short">Індивідуальне заняття для конкретного учасника</div>
+          </div>
+          <div class="cmd-chevron">▼</div>
+        </div>
+        <div class="cmd-detail">
+          <div class="detail-grid">
+            <div class="detail-block">
+              <div class="detail-label" style="color:var(--amber)">Параметри</div>
+              <div class="detail-val"><strong>member</strong> — вибрати учасника з меню<br><strong>activity</strong> — вибрати активність</div>
+            </div>
+            <div class="detail-block">
+              <div class="detail-label" style="color:var(--amber)">Форма</div>
+              <div class="detail-val">Назва заняття / Дата (YYYY-MM-DD) / Час (HH:MM)</div>
+            </div>
+          </div>
+          <div class="result-box">
+            <div class="result-label" style="color:var(--amber)">Важливо</div>
+            <div class="detail-val">НЕ з'являється в #otf-графік. Видно лише учаснику в /my-plan та тренеру в /week-plan. Учасник отримує DM.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="cmd-card" onclick="toggleCmd(this)">
+        <div class="cmd-header">
+          <div class="cmd-num" style="background:var(--amber-bg);color:var(--amber)">3</div>
+          <div class="cmd-title-wrap">
+            <div class="cmd-name" style="color:var(--amber)">/mark-attendance</div>
+            <div class="cmd-short">Відзначити відвідуваність після тренування</div>
+          </div>
+          <div class="cmd-chevron">▼</div>
+        </div>
+        <div class="cmd-detail">
+          <div class="detail-grid">
+            <div class="detail-block">
+              <div class="detail-label" style="color:var(--amber)">session_id</div>
+              <div class="detail-val">Формат: <code style="background:var(--bg3);padding:1px 5px;border-radius:4px;font-size:11px">SWIM-2026-05-21-1200</code><br>Підказка в полі команди</div>
+            </div>
+            <div class="detail-block">
+              <div class="detail-label" style="color:var(--amber)">Коли доступно</div>
+              <div class="detail-val">Лише після початку тренування. Якщо раніше — бот покаже скільки часу залишилось</div>
+            </div>
+          </div>
+          <div class="result-box">
+            <div class="result-label" style="color:var(--amber)">Процес</div>
+            <div class="detail-val">1. Вибрати хто НЕ прийшов зі списку або натиснути "Всі були присутні"<br>2. Додати walk-in учасників (якщо є)<br>3. Натиснути ✅ Готово<br><br>Можна запустити повторно для виправлень.</div>
+          </div>
+          <div class="sim-wrap">
+            <div class="sim-bar">
+              <div class="sim-dot" style="background:#ed4245"></div>
+              <div class="sim-dot" style="background:#faa61a"></div>
+              <div class="sim-dot" style="background:#57f287"></div>
+              <div class="sim-chan"># swim-schedule</div>
+            </div>
+            <div class="sim-body" id="s-att">
+              <div class="sim-msg show" id="at1">
+                <div class="sim-av" style="background:var(--amber-dim)">Т</div>
+                <div class="sim-c"><div class="sim-auth">coach_mykola<small>13:05</small></div>
+                <div class="sim-text"><span class="sim-code">/mark-attendance</span> SWIM-2026-05-21-1200</div></div>
+              </div>
+              <div class="sim-msg" id="at2">
+                <div class="sim-av" style="background:#5865F2">B</div>
+                <div class="sim-c"><div class="sim-auth">OTF BOT<small>13:05</small></div>
+                <div class="sim-text"><strong>📋 Хто прийшов — SWIM-2026-05-21-1200</strong><br>👥 Очікується: <strong>8</strong> учасників<br><br><span class="sim-btn" style="background:#57F287;color:#111">✅ Всі були присутні</span><span class="sim-btn" style="background:#4f545c;color:#fff">➕ Walk-in</span></div></div>
+              </div>
+              <div class="sim-msg" id="at3">
+                <div class="sim-av" style="background:var(--amber-dim)">Т</div>
+                <div class="sim-c"><div class="sim-auth">coach_mykola<small>13:06</small></div>
+                <div class="sim-text"><em style="color:#72767d">натискає ✅ Всі були присутні</em></div></div>
+              </div>
+              <div class="sim-msg" id="at4">
+                <div class="sim-av" style="background:#5865F2">B</div>
+                <div class="sim-c"><div class="sim-auth">OTF BOT<small>13:06</small></div>
+                <div class="sim-text">✅ <strong>Всі 8 відзначені як ПРИСУТНІ</strong><br><span class="sim-btn" style="background:#5865F2;color:#fff">✅ Готово</span></div></div>
+              </div>
+            </div>
+            <div class="play-row">
+              <button class="play-btn" style="background:var(--amber);color:#111" onclick="playSim('att',['at1','at2','at3','at4'],'st-att')">▶ Симуляція</button>
+              <span class="play-status" id="st-att"></span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="cmd-card" onclick="toggleCmd(this)">
+        <div class="cmd-header">
+          <div class="cmd-num" style="background:var(--amber-bg);color:var(--amber)">4</div>
+          <div class="cmd-title-wrap">
+            <div class="cmd-name" style="color:var(--amber)">/attendance-report</div>
+            <div class="cmd-short">Повний звіт відвідуваності сесії</div>
+          </div>
+          <div class="cmd-chevron">▼</div>
+        </div>
+        <div class="cmd-detail">
+          <div class="detail-grid">
+            <div class="detail-block">
+              <div class="detail-label" style="color:var(--amber)">session_id</div>
+              <div class="detail-val">Формат: ACTIVITY-YYYY-MM-DD-HHMM<br>Підказка в полі команди</div>
+            </div>
+            <div class="detail-block">
+              <div class="detail-label" style="color:var(--amber)">Результат</div>
+              <div class="detail-val">✅ Були присутні<br>❌ Не прийшли<br>➕ Walk-in учасники<br>⏳ Не відзначено</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-label">Також доступні всі команди учасника</div>
+    <div class="tip" style="background:var(--amber-bg);border:1px solid rgba(245,158,11,0.2)">
+      <span class="tip-icon">🪖</span>
+      <span style="color:var(--muted)">Тренер також може використовувати /my-plan, /my-profile, /find-member та /ask-otf — так само, як учасник.</span>
+    </div>
+  </div>
+
+</div>
+
+<!-- ══ STAFF ══ -->
+<div class="panel" id="panel-staff">
+
+  <div class="section">
+    <div class="section-label">Верифікація</div>
+    <div class="cmd-grid">
+      <div class="cmd-card" onclick="toggleCmd(this)">
+        <div class="cmd-header">
+          <div class="cmd-num" style="background:var(--purple-bg);color:var(--purple)">1</div>
+          <div class="cmd-title-wrap">
+            <div class="cmd-name" style="color:var(--purple)">/verify</div>
+            <div class="cmd-short">Верифікувати учасника після перевірки документів</div>
+          </div>
+          <div class="cmd-chevron">▼</div>
+        </div>
+        <div class="cmd-detail">
+          <div class="detail-grid">
+            <div class="detail-block">
+              <div class="detail-label" style="color:var(--purple)">Параметри</div>
+              <div class="detail-val"><strong>user</strong> — вибрати учасника з меню<br><strong>status</strong> — approved / pending / rejected<br><strong>role</strong> — Veteran / Volunteer / Coach / Partner / Guest</div>
+            </div>
+            <div class="detail-block">
+              <div class="detail-label" style="color:var(--purple)">Де запускати</div>
+              <div class="detail-val">Будь-який канал (зазвичай #admin-commands)</div>
+            </div>
+          </div>
+          <table class="auto-table" style="background:var(--bg2);border-radius:10px;overflow:hidden;border:1px solid var(--border)">
+            <thead><tr style="background:var(--bg3)"><th style="color:var(--purple)">Статус</th><th>Що відбувається</th></tr></thead>
+            <tbody>
+              <tr><td style="color:#22c55e;font-weight:600">approved</td><td>Призначає @Verified + роль персони + ролі активностей з анкети. Учасник отримує DM підтвердження. Через 24 год — нагадування заповнити профіль.</td></tr>
+              <tr><td style="color:var(--amber);font-weight:600">pending</td><td>DM учаснику: "Отримали документи, потребуємо додаткової інформації. Перевір пошту."</td></tr>
+              <tr><td style="color:#f87171;font-weight:600">rejected</td><td>DM учаснику з повідомленням про відмову.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-label">Розклад</div>
+    <div class="cmd-grid">
+      <div class="cmd-card" onclick="toggleCmd(this)">
+        <div class="cmd-header">
+          <div class="cmd-num" style="background:var(--purple-bg);color:var(--purple)">2</div>
+          <div class="cmd-title-wrap"><div class="cmd-name" style="color:var(--purple)">/post-schedule</div><div class="cmd-short">Створити нову сесію для активності</div></div>
+          <div class="cmd-chevron">▼</div>
+        </div>
+        <div class="cmd-detail">
+          <div class="detail-grid">
+            <div class="detail-block"><div class="detail-label" style="color:var(--purple)">Параметри</div><div class="detail-val"><strong>activity</strong> — вибрати зі списку</div></div>
+            <div class="detail-block"><div class="detail-label" style="color:var(--purple)">Форма</div><div class="detail-val">Назва сесії / Дата (YYYY-MM-DD) / Час (HH:MM)</div></div>
+          </div>
+          <div class="result-box"><div class="result-label" style="color:var(--purple)">Результат</div><div class="detail-val">Сесія збережена в Google Sheets. Embed-картка в каналі активності. DM всім учасникам з відповідною роллю. Нові plan-рядки в Weekly Plans.</div></div>
+        </div>
+      </div>
+      <div class="cmd-card" onclick="toggleCmd(this)">
+        <div class="cmd-header">
+          <div class="cmd-num" style="background:var(--purple-bg);color:var(--purple)">3</div>
+          <div class="cmd-title-wrap"><div class="cmd-name" style="color:var(--purple)">/edit-schedule</div><div class="cmd-short">Редагувати існуючу сесію</div></div>
+          <div class="cmd-chevron">▼</div>
+        </div>
+        <div class="cmd-detail">
+          <div class="detail-grid">
+            <div class="detail-block"><div class="detail-label" style="color:var(--purple)">session_id</div><div class="detail-val">Підказка в полі: e.g. SWIM-2026-04-28-1200</div></div>
+            <div class="detail-block"><div class="detail-label" style="color:var(--purple)">Результат</div><div class="detail-val">Сесія оновлена. Embed в каналі відредаговано. Учасники отримали DM.</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="cmd-card" onclick="toggleCmd(this)">
+        <div class="cmd-header">
+          <div class="cmd-num" style="background:var(--purple-bg);color:var(--purple)">4</div>
+          <div class="cmd-title-wrap"><div class="cmd-name" style="color:var(--purple)">/delete-schedule</div><div class="cmd-short">Видалити сесію та повідомити учасників</div></div>
+          <div class="cmd-chevron">▼</div>
+        </div>
+        <div class="cmd-detail">
+          <div class="detail-grid">
+            <div class="detail-block"><div class="detail-label" style="color:var(--purple)">session_id</div><div class="detail-val">Підказка в полі команди</div></div>
+            <div class="detail-block"><div class="detail-label" style="color:var(--purple)">Результат</div><div class="detail-val">Сесія видалена з Sheets та з каналу активності. Всі учасники отримали DM.</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="cmd-card" onclick="toggleCmd(this)">
+        <div class="cmd-header">
+          <div class="cmd-num" style="background:var(--purple-bg);color:var(--purple)">5</div>
+          <div class="cmd-title-wrap"><div class="cmd-name" style="color:var(--purple)">/update-schedule</div><div class="cmd-short">Оновити #otf-графік та згенерувати сесії</div></div>
+          <div class="cmd-chevron">▼</div>
+        </div>
+        <div class="cmd-detail">
+          <div class="result-box"><div class="result-label" style="color:var(--purple)">Результат</div><div class="detail-val">Генерує повторювані сесії з вкладки Recurring Sessions. Оновлює #otf-графік. Backfill plan-рядків для нових учасників. Показує: Sessions created / Members notified.</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-label">Звіти та пошук</div>
+    <div class="cmd-grid">
+      <div class="cmd-card" onclick="toggleCmd(this)">
+        <div class="cmd-header">
+          <div class="cmd-num" style="background:var(--purple-bg);color:var(--purple)">6</div>
+          <div class="cmd-title-wrap"><div class="cmd-name" style="color:var(--purple)">/week-plan</div><div class="cmd-short">Список учасників на тиждень за активністю</div></div>
+          <div class="cmd-chevron">▼</div>
+        </div>
+        <div class="cmd-detail">
+          <div class="detail-grid">
+            <div class="detail-block"><div class="detail-label" style="color:var(--purple)">Параметри</div><div class="detail-val"><strong>activity</strong> — вибрати зі списку</div></div>
+            <div class="detail-block"><div class="detail-label" style="color:var(--purple)">Результат</div><div class="detail-val">✅ Підтверджені / ⏳ Очікують / ❌ Відмовились + 👤 Індивідуальні заняття</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="cmd-card" onclick="toggleCmd(this)">
+        <div class="cmd-header">
+          <div class="cmd-num" style="background:var(--purple-bg);color:var(--purple)">7</div>
+          <div class="cmd-title-wrap"><div class="cmd-name" style="color:var(--purple)">/profile-report</div><div class="cmd-short">Хто заповнив профіль, хто ні</div></div>
+          <div class="cmd-chevron">▼</div>
+        </div>
+        <div class="cmd-detail">
+          <div class="result-box"><div class="result-label" style="color:var(--purple)">Результат</div><div class="detail-val">Список всіх @Verified учасників розділений на дві групи: ✅ заповнили /my-profile та ❌ ще не заповнили.</div></div>
+        </div>
+      </div>
+      <div class="cmd-card" onclick="toggleCmd(this)">
+        <div class="cmd-header">
+          <div class="cmd-num" style="background:var(--purple-bg);color:var(--purple)">8</div>
+          <div class="cmd-title-wrap"><div class="cmd-name" style="color:var(--purple)">/mark-attendance та /attendance-report</div><div class="cmd-short">Облік відвідуваності — аналогічно до тренера</div></div>
+          <div class="cmd-chevron">▼</div>
+        </div>
+        <div class="cmd-detail">
+          <div class="tip" style="background:var(--purple-bg);border:1px solid rgba(167,139,250,0.2)">
+            <span class="tip-icon">🏋️</span>
+            <span style="color:var(--muted)">Детальні інструкції — у вкладці Тренер.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-label">Автоматичні крони</div>
+    <div class="cron-grid">
+      <div class="cron-card">
+        <div class="cron-time" style="color:var(--purple)">Неділя 21:42</div>
+        <div class="cron-who">Staff + Coach → DM</div>
+        <div class="cron-desc">Список session_id всіх сесій наступного тижня</div>
+      </div>
+      <div class="cron-card">
+        <div class="cron-time" style="color:var(--purple)">Неділя 21:42</div>
+        <div class="cron-who">Всі учасники → DM</div>
+        <div class="cron-desc">Plan тренувань на наступний тиждень</div>
+      </div>
+      <div class="cron-card">
+        <div class="cron-time" style="color:var(--purple)">Щодня 21:21</div>
+        <div class="cron-who">Учасники з тренуваннями завтра → DM + канал</div>
+        <div class="cron-desc">Нагадування про завтрашні тренування</div>
+      </div>
+      <div class="cron-card">
+        <div class="cron-time" style="color:var(--purple)">Неділя 21:21</div>
+        <div class="cron-who">#otf-графік + ідеальна відвідуваність → DM</div>
+        <div class="cron-desc">Публічний підсумок тижня + congrats.jpg</div>
+      </div>
+      <div class="cron-card">
+        <div class="cron-time" style="color:var(--purple)">1-го числа 12:12</div>
+        <div class="cron-who">Всі учасники → DM</div>
+        <div class="cron-desc">Місячний звіт по активностях</div>
+      </div>
+      <div class="cron-card">
+        <div class="cron-time" style="color:var(--purple)">Щодня 10:00</div>
+        <div class="cron-who">Нові учасники (через 24 год) → DM</div>
+        <div class="cron-desc">Нагадування заповнити /my-profile</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-label">Google Sheets — вкладки</div>
+    <div class="sheets-table">
+      <div class="sheet-row"><div class="sheet-name" style="color:var(--purple)">Sheet1</div><div class="sheet-desc">Анкети учасників: ім'я, email, роль, активності, місто, статус верифікації, profile_reminder_sent</div></div>
+      <div class="sheet-row"><div class="sheet-name" style="color:var(--purple)">Weekly Sessions</div><div class="sheet-desc">Всі сесії тижня: session_id, активність, дата, час, назва, message_id в каналі</div></div>
+      <div class="sheet-row"><div class="sheet-name" style="color:var(--purple)">Weekly Plans</div><div class="sheet-desc">Плани учасників: хто + яка сесія + статус (PENDING/CONFIRMED/OPTED_OUT) + відвідуваність (ATTENDED/NO_SHOW)</div></div>
+      <div class="sheet-row"><div class="sheet-name" style="color:var(--purple)">Recurring Sessions</div><div class="sheet-desc">Шаблони повторюваних сесій. Додай рядок з activity/session_day/session_time/session_label/active=TRUE — бот створить щотижня</div></div>
+      <div class="sheet-row"><div class="sheet-name" style="color:var(--purple)">Profiles</div><div class="sheet-desc">Профілі учасників з #otf-people: ім'я, місто, діяльність, message_id картки в Discord</div></div>
+      <div class="sheet-row"><div class="sheet-name" style="color:var(--purple)">Reports</div><div class="sheet-desc">Зведений звіт відвідуваності за місяць. Змінити B1 на потрібний місяць (напр. 2026-05). Файл → Завантажити → Excel.</div></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ══ GUEST ══ -->
+<div class="panel" id="panel-guest">
+
+  <div class="section">
+    <div class="section-label">3 кроки для входу в спільноту</div>
+    <div class="flow">
+      <div class="flow-row">
+        <div class="flow-spine">
+          <div class="flow-circle" style="background:var(--pink-bg);color:var(--pink)">1</div>
+          <div class="flow-line" style="background:var(--border)"></div>
+        </div>
+        <div class="flow-content">
+          <div class="flow-name">Посилання-запрошення</div>
+          <div class="flow-desc">Отримати від команди OTF або учасника спільноти. Перейти за посиланням — Discord відкриється автоматично. Якщо немає акаунту — безкоштовна реєстрація на discord.com</div>
+        </div>
+      </div>
+      <div class="flow-row">
+        <div class="flow-spine">
+          <div class="flow-circle" style="background:var(--pink-bg);color:var(--pink)">2</div>
+          <div class="flow-line" style="background:var(--border)"></div>
+        </div>
+        <div class="flow-content">
+          <div class="flow-name">#rules-general → кнопка</div>
+          <div class="flow-desc">Прочитати правила OTF. Натиснути кнопку: <strong style="color:var(--pink)">👋 Я ДРУГ OTF — приймаю правила</strong>. Бот відкриє доступ до каналу #start-here.</div>
+        </div>
+      </div>
+      <div class="flow-row">
+        <div class="flow-spine">
+          <div class="flow-circle" style="background:var(--pink-bg);color:var(--pink)">3</div>
+        </div>
+        <div class="flow-content">
+          <div class="flow-name">#start-here → реєстрація</div>
+          <div class="flow-desc">Натиснути кнопку реєстрації. Заповнити форму: ім'я, email, місто, роль (OTF Friend / Volunteer / Partner). Команда OTF зв'яжеться найближчим часом.</div>
+        </div>
+      </div>
+    </div>
+    <div class="tip" style="background:var(--pink-bg);border:1px solid rgba(244,114,182,0.2);margin-top:16px">
+      <span class="tip-icon">💡</span>
+      <span style="color:var(--muted)">Ролі Volunteer та Partner призначаються вручну командою OTF після перегляду заявки. Ви отримаєте повідомлення від бота.</span>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-label">Доступні канали після реєстрації</div>
+    <div class="ch-table">
+      <div class="ch-row"><div class="ch-name" style="color:var(--pink)">#rules-general</div><div class="ch-desc">Правила спільноти OTF</div><div class="ch-access" style="color:var(--green)">✅ Всі</div></div>
+      <div class="ch-row"><div class="ch-name" style="color:var(--pink)">#start-here</div><div class="ch-desc">Форма реєстрації</div><div class="ch-access" style="color:var(--green)">✅ Після правил</div></div>
+      <div class="ch-row"><div class="ch-name" style="color:var(--pink)">#announcements</div><div class="ch-desc">Оголошення та новини OTF</div><div class="ch-access" style="color:var(--green)">✅ Після реєстрації</div></div>
+      <div class="ch-row"><div class="ch-name" style="color:var(--pink)">#general</div><div class="ch-desc">Загальний чат спільноти</div><div class="ch-access" style="color:var(--green)">✅ Після реєстрації</div></div>
+      <div class="ch-row"><div class="ch-name" style="color:var(--pink)">#події</div><div class="ch-desc">Відкриті події та активності OTF</div><div class="ch-access" style="color:var(--green)">✅ Після реєстрації</div></div>
+      <div class="ch-row"><div class="ch-name" style="color:var(--pink)">#otf-people</div><div class="ch-desc">Профілі учасників спільноти</div><div class="ch-access" style="color:var(--green)">✅ Після реєстрації</div></div>
+      <div class="ch-row"><div class="ch-name" style="color:var(--pink)">#мені-потрібна-допомога</div><div class="ch-desc">Запит до команди OTF</div><div class="ch-access" style="color:var(--green)">✅ Після реєстрації</div></div>
+      <div class="ch-row"><div class="ch-name" style="color:var(--muted)">Канали активностей</div><div class="ch-desc">Swim, CrossFit, Tango, Massage та інші</div><div class="ch-access" style="color:#f87171">❌ Тільки @Verified</div></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-label">Як отримати допомогу</div>
+    <div class="tip" style="background:var(--pink-bg);border:1px solid rgba(244,114,182,0.2)">
+      <span class="tip-icon">💬</span>
+      <div>
+        <div style="font-weight:600;margin-bottom:4px">Напиши в #мені-потрібна-допомога</div>
+        <div style="color:var(--muted)">Бот автоматично відповість і повідомить команду OTF. Якщо питання термінове — напиши слово <strong style="color:var(--pink)">ТЕРМІНОВО</strong> у наступному повідомленні — команда зреагує якнайшвидше.</div>
+      </div>
+    </div>
+    <div style="margin-top:10px;padding:12px 16px;background:var(--bg2);border-radius:12px;border:1px solid var(--border);font-size:13px;color:var(--muted)">
+      ⏱ Команда OTF відповідає протягом <strong style="color:var(--text)">24 годин</strong>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-label">Симуляція: процес реєстрації</div>
+    <div class="sim-wrap">
+      <div class="sim-bar">
+        <div class="sim-dot" style="background:#ed4245"></div>
+        <div class="sim-dot" style="background:#faa61a"></div>
+        <div class="sim-dot" style="background:#57f287"></div>
+        <div class="sim-chan"># start-here</div>
+      </div>
+      <div class="sim-body" id="s-reg">
+        <div class="sim-msg show" id="rg1">
+          <div class="sim-av" style="background:var(--pink-dim)">М</div>
+          <div class="sim-c"><div class="sim-auth">marina_new<small>11:00</small></div>
+          <div class="sim-text"><em style="color:#72767d">натискає кнопку 🪖 Розпочати реєстрацію</em></div></div>
+        </div>
+        <div class="sim-msg" id="rg2">
+          <div class="sim-av" style="background:#5865F2">B</div>
+          <div class="sim-c"><div class="sim-auth">OTF BOT<small>11:00</small></div>
+          <div class="sim-text"><strong>📝 Реєстрація OTF</strong><br>Форма відкрита. Заповни: ім'я, email, місто, роль.</div></div>
+        </div>
+        <div class="sim-msg" id="rg3">
+          <div class="sim-av" style="background:var(--pink-dim)">М</div>
+          <div class="sim-c"><div class="sim-auth">marina_new<small>11:01</small></div>
+          <div class="sim-text"><em style="color:#72767d">заповнює форму та надсилає</em></div></div>
+        </div>
+        <div class="sim-msg" id="rg4">
+          <div class="sim-av" style="background:#5865F2">B</div>
+          <div class="sim-c"><div class="sim-auth">OTF BOT<small>11:01</small></div>
+          <div class="sim-text">✅ <strong>Дякуємо за реєстрацію!</strong><br>Ваші дані збережено. Команда OTF розгляне заявку та зв'яжеться найближчим часом. 🇺🇦</div></div>
+        </div>
+      </div>
+      <div class="play-row">
+        <button class="play-btn" style="background:var(--pink-dim);color:#fff" onclick="playSim('reg',['rg1','rg2','rg3','rg4'],'st-reg')">▶ Симуляція</button>
+        <span class="play-status" id="st-reg"></span>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+</div><!-- /panels -->
+
+<footer>
+  <strong>ONE TEAM FORCES</strong> &nbsp;·&nbsp; OTF Discord Bot &nbsp;·&nbsp; Слава Україні 🇺🇦
+</footer>
+
+<script>
+function switchRole(role, btn) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('show'));
+  document.querySelectorAll('.tab').forEach(b => b.className = 'tab');
+  document.getElementById('panel-' + role).classList.add('show');
+  btn.className = 'tab active-' + role;
+  window.scrollTo({top: document.querySelector('.tabs').offsetTop - 20, behavior: 'smooth'});
+}
+
+function toggleCmd(card) {
+  card.classList.toggle('open');
+}
+
+function playSim(id, msgIds, statusId) {
+  msgIds.forEach(mid => {
+    const el = document.getElementById(mid);
+    if (el) el.classList.remove('show');
+  });
+  const status = document.getElementById(statusId);
+  if (status) status.textContent = '⏳ Відтворення...';
+  msgIds.forEach((mid, i) => {
+    setTimeout(() => {
+      const el = document.getElementById(mid);
+      if (el) el.classList.add('show');
+      if (i === msgIds.length - 1 && status) status.textContent = '✅ Готово';
+    }, i * 700);
+  });
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  const cards = document.querySelectorAll('#panel-member .cmd-card');
+  if (cards[0]) cards[0].classList.add('open');
+});
+</script>
+</body>
+</html>
